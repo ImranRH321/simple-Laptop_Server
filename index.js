@@ -41,8 +41,8 @@ const jwtVeryFy = (req, res, next) => {
 const stripe = require("stripe")(process.env.STRIPE_SECREET_KEY);
 
 /* =========== */
-const uri =
-  "mongodb+srv://laptop:PmEicJBzsgHgT0nJ@cluster0.izfe9.mongodb.net/?retryWrites=true&w=majority";
+// const uri ="mongodb+srv://laptop:PmEicJBzsgHgT0nJ@cluster0.izfe9.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.izfe9.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
