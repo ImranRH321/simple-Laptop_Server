@@ -139,8 +139,9 @@ async function run() {
     app.put("/user/:email", jwtVeryFy, async (req, res) => {
       const email = req.params.email;
       const decodedEmail = req.decoded.email;
+      console.log(email, decodedEmail);
       const requester = await userCollection.findOne({ email: decodedEmail });
-      if (requester.role === "admin") {
+      if (requester?.role === "admin") {
         const filter = { email: email };
         const updateDoc = {
           $set: { role: "admin" },
@@ -157,8 +158,9 @@ async function run() {
     app.get("/admin/:email", async (req, res) => {
       const email = req.params.email;
       const user = await userCollection.findOne({ email: email });
+      console.log(email, user);
       let isAdmin = false;
-      if (user.role === "admin") {
+      if (user?.role === "admin") {
         isAdmin = true;
       }
       res.send({ admin: isAdmin });
