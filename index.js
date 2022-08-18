@@ -41,7 +41,6 @@ const jwtVeryFy = (req, res, next) => {
 const stripe = require("stripe")(process.env.STRIPE_SECREET_KEY);
 
 /* =========== */
-// const uri ="mongodb+srv://laptop:PmEicJBzsgHgT0nJ@cluster0.izfe9.mongodb.net/?retryWrites=true&w=majority";
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.izfe9.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
@@ -82,13 +81,11 @@ async function run() {
     //  all monitor Apa load
     app.get("/monitor", async (req, res) => {
       const result = await monitorCollection.find().toArray();
-      // console.log(result);
       res.send(result);
     });
 
     app.get("/monitor/:id", async (req, res) => {
       const id = req.params.id;
-      // console.log(id);
       const result = await monitorCollection.findOne({ _id: ObjectId(id) });
       res.send(result);
     });
@@ -115,17 +112,21 @@ async function run() {
       const updateDoc = {
         $set: user,
       };
-      const result = await profileCollection.updateOne(filter, updateDoc,option);
+      const result = await profileCollection.updateOne(
+        filter,
+        updateDoc,
+        option
+      );
       console.log(result);
       res.send(result);
     });
-    // load Profile data 
+    // load Profile data
     app.get("/profile", async (req, res) => {
       const email = req.query.email;
       console.log(email);
-      const filter = {email: email}
+      const filter = { email: email };
       console.log(filter);
-      const result = await profileCollection.findOne(filter)
+      const result = await profileCollection.findOne(filter);
       res.send(result);
     });
     // ____________________________END_____________________________
@@ -139,7 +140,6 @@ async function run() {
     app.put("/user/:email", jwtVeryFy, async (req, res) => {
       const email = req.params.email;
       const decodedEmail = req.decoded.email;
-      console.log(email, decodedEmail);
       const requester = await userCollection.findOne({ email: decodedEmail });
       if (requester?.role === "admin") {
         const filter = { email: email };
@@ -188,7 +188,6 @@ async function run() {
     app.delete("/user/:id", async (req, res) => {
       const id = req.params.id;
       const result = await userCollection.deleteOne({ _id: ObjectId(id) });
-      // console.log(result, "delete");
       res.send(result);
     });
 
@@ -197,7 +196,6 @@ async function run() {
       const { price } = req.body;
 
       const amount = parseFloat(price) * 1;
-      // console.log('amount', amount);
 
       if (amount) {
         const paymentIntent = await stripe.paymentIntents.create({
@@ -302,7 +300,7 @@ async function run() {
       res.send(result);
     });
   } finally {
-    // client.close()
+    client.close()
   }
 }
 run().catch(console.dir);
